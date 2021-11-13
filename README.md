@@ -1,1 +1,1 @@
-This is a simple DevOps project illustrating different tools and their integration
+This is a sample Java project to use for DevOps exercise
