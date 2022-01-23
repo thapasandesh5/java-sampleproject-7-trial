@@ -1,30 +1,20 @@
 pipeline {
-agent any
-tools {
-maven "Maven"
-jdk "JDK"
-}
-stages {
-stage('Initialize'){
-steps{
-echo "PATH = ${M2_HOME}/bin:${PATH}"
-echo "M2_HOME = /opt/maven"
-}
-}
-stage('Build') {
-steps {
-dir("/var/lib/jenkins/workspace/demopipelinetask/my-app") {
-sh 'mvn -B -DskipTests clean package'
-}
-}
-}
-}
-post {
-always {
-junit(
-allowEmptyResults: true,
-testResults: '*/test-reports/.xml'
-)
-}
-}
+  agent any
+  tools {
+    maven 'maven-3.6.3' 
+  }
+  stages {
+    stage ('Build') {
+      steps {
+        sh 'mvn clean install'
+      }
+    }
+    stage ('Deploy') {
+      steps {
+        script {
+          deploy adapters: [tomcat8(credentialsId: 'tomcat_user', path: '', url: 'http://dayal-test.letspractice.tk:8081')], contextPath: '', onFailure: false, war: '**/*.war' 
+        }
+      }
+    }
+  }
 }
